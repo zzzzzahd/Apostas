@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resenhas And Falcatruas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #fff; 
+            color: #333;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #e11d48; 
+        }
+        .version-badge {
+            font-size: 11px; 
+            color: white; 
+            background: #10b981; 
+            padding: 3px 8px; 
+            border-radius: 12px;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 20px;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { background: #f5f5f5; }
+        .nav-btn.active { 
+            background: #333; 
+            color: white; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .alert-box {
+            background: linear-gradient(135deg, #fef3c7, #fcd34d);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .alert-box h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .alert-box p {
+            color: #451a03;
+            font-weight: 500;
+        }
+        .form-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .input:focus {
+            outline: none;
+            border-color: #e11d48;
+            box-shadow: 0 0 5px rgba(225, 29, 72, 0.3);
+        }
+        .btn {
+            background: #e11d48;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        .btn:hover { 
+            background: #be185d; 
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .btn-danger {
+            background: #ef4444;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-info {
+            background: #3b82f6;
+        }
+        .btn-info:hover {
+            background: #2563eb;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+        .card.ativa {
+            border-left: 5px solid #10b981;
+        }
+        .card.encerrada {
+            border-left: 5px solid #ef4444;
+            opacity: 0.8;
+            background: #fafafa;
+        }
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-ativa {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-encerrada {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .card-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            margin-bottom: 10px;
+            margin-top: 25px;
+        }
+        .vs { color: #e11d48; font-weight: bold; }
+        .card-desc { 
+            color: #666; 
+            margin-bottom: 15px; 
+            line-height: 1.5; 
+        }
+        .card-value { 
+            color: #e11d48; 
+            font-weight: bold; 
+            font-size: 18px; 
+            margin-bottom: 10px; 
+        }
+        .card-obs { 
+            font-size: 12px; 
+            color: #999; 
+            margin-bottom: 15px; 
+            font-style: italic; 
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .card-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .rules-box {
+            background: #fef2f2;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #fecaca;
+        }
+        .rule {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 1px solid #fecaca;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .hidden { display: none; }
+        h1, h2 { margin-bottom: 20px; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #e11d48, #be185d);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .success-message, .error-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: bold;
+        }
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        .filters {
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn.active {
+            background: #e11d48;
+            color: white;
+            border-color: #e11d48;
+        }
+        .backup-section {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .backup-section h3 {
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .import-area {
+            display: none;
+            margin-top: 15px;
+        }
+        .import-area textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            .card-buttons {
+                flex-direction: column;
+            }
+            .card-btn {
+                min-width: auto;
+            }
+            .backup-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            Resenhas And Falcatruas
+            <span class="version-badge">VERSÃO CORRIGIDA ✨</span>
+        </div>
+        <div>
+            <button class="nav-btn active" onclick="mostrarPagina('apostas')">Apostas</button>
+            <button class="nav-btn" onclick="mostrarPagina('regras')">Regras</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="success-message" id="success-msg"></div>
+        <div class="error-message" id="error-msg"></div>
+
+        <!-- Página de Apostas -->
+        <div id="apostas">
+            <div class="alert-box">
+                <h3>🎉 Site Funcionando Corretamente!</h3>
+                <p>Se você vê esta mensagem, o arquivo foi carregado com sucesso. Agora você pode usar todas as funcionalidades!</p>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="total-apostas">0</span>
+                    <span class="stat-label">Total de Apostas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="apostas-ativas">0</span>
+                    <span class="stat-label">Ativas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="apostas-encerradas">0</span>
+                    <span class="stat-label">Encerradas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="valor-total">R$ 0</span>
+                    <span class="stat-label">Valor Total</span>
+                </div>
+            </div>
+
+            <!-- Sistema de Backup Seguro -->
+            <div class="backup-section">
+                <h3>💾 Gerenciamento de Dados</h3>
+                <p><strong>Status:</strong> <span id="storage-status">Verificando...</span></p>
+                
+                <div class="backup-buttons">
+                    <button class="btn btn-success" onclick="salvarDados()">💾 Salvar</button>
+                    <button class="btn btn-info" onclick="exportarDados()">📤 Download Backup</button>
+                    <button class="btn btn-info" onclick="toggleImport()">📥 Importar Backup</button>
+                    <button class="btn btn-danger" onclick="resetarDados()">🔄 Resetar</button>
+                </div>
+
+                <div class="import-area" id="import-area">
+                    <h4>Cole o conteúdo do backup aqui:</h4>
+                    <textarea id="import-json" placeholder='Cole aqui o JSON do backup...'></textarea>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-success" onclick="importarDados()">✅ Importar</button>
+                        <button class="btn" onclick="toggleImport()">❌ Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário Nova Aposta -->
+            <div class="form-box">
+                <h2>➕ Nova Aposta</h2>
+                <div class="form-row">
+                    <input class="input" placeholder="Apostador 1*" id="ap1" required>
+                    <input class="input" placeholder="Apostador 2*" id="ap2" required>
+                    <input class="input" placeholder="Descrição*" id="desc" required>
+                    <input class="input" placeholder="Valor*" id="val" required>
+                    <input class="input" placeholder="Observações (opcional)" id="obs">
+                </div>
+                <button class="btn" onclick="adicionarAposta()">Adicionar Aposta</button>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="filters">
+                <button class="filter-btn active" onclick="filtrarApostas('todas')">Todas</button>
+                <button class="filter-btn" onclick="filtrarApostas('ativas')">Ativas</button>
+                <button class="filter-btn" onclick="filtrarApostas('encerradas')">Encerradas</button>
+            </div>
+
+            <div class="cards" id="lista-apostas">
+                <div class="loading">Carregando apostas...</div>
+            </div>
+        </div>
+
+        <!-- Página de Regras -->
+        <div id="regras" class="hidden">
+            <div class="rules-box">
+                <h2 style="text-align: center; color: #dc2626;">📋 Regras das Apostas</h2>
+                <div class="rule">
+                    <strong>REGRA 1:</strong> Presepou pra pagar é o dobro, remoção do grupo por tempo indeterminado e volta mediante ao conselho da verdade.
+                </div>
+                <div class="rule">
+                    <strong>REGRA 2:</strong> Caso um dos lados queira cancelar a aposta terá que pagar o cashout para o adversário.
+                </div>
+                <div class="rule">
+                    <strong>REGRA 3:</strong> Apostas encerradas ficam salvas no histórico para consulta, mas não podem ser modificadas.
+                </div>
+                <div class="rule">
+                    <strong>REGRA 4:</strong> Apenas o administrador pode definir o vencedor de uma aposta ativa.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados iniciais que sempre estarão disponíveis
+        const apostasIniciais = [
+            { id: 1, ap1: "Cabral", ap2: "Islan", desc: "Quem chega com a melhor carcaça no São Pedro", val: "100,00", obs: "", status: "ativa", dataCriacao: "2024-01-15", vencedor: null },
+            { id: 2, ap1: "Thiago", ap2: "Cabral", desc: "Cartola", val: "100,00 (por turno)", obs: "", status: "ativa", dataCriacao: "2024-01-16", vencedor: null },
+            { id: 3, ap1: "Thiago (Flamengo)", ap2: "Dinho (São Paulo)", desc: "Quem ganha ou chega mais longe nas competições", val: "50,00 (por competição)", obs: "", status: "ativa", dataCriacao: "2024-01-17", vencedor: null },
+            { id: 4, ap1: "Alisson (Flamengo)", ap2: "Islan (São Paulo)", desc: "Quem fica na frente no Brasileirão", val: "100,00", obs: "", status: "encerrada", dataCriacao: "2024-01-10", vencedor: "Alisson (Flamengo)" },
+            { id: 5, ap1: "Cleiton", ap2: "Cabral", desc: "Gabigordo não faz 25 gols na temporada", val: "100,00", obs: "Aposta sobre desempenho do Gabigol", status: "encerrada", dataCriacao: "2024-01-08", vencedor: "Cleiton" }
+        ];
+
+        let apostas = [...apostasIniciais];
+        let filtroAtivo = 'todas';
+        const STORAGE_KEY = 'resenhas_falcatruas_apostas';
+
+        // Testar se localStorage funciona
+        function testarLocalStorage() {
+            try {
+                const teste = 'teste_storage_' + Date.now();
+                localStorage.setItem(teste, 'teste');
+                localStorage.removeItem(teste);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Atualizar status do storage
+        function atualizarStatusStorage() {
+            const statusEl = document.getElementById('storage-status');
+            const funciona = testarLocalStorage();
+            
+            if (funciona) {
+                statusEl.innerHTML = '<span style="color: #10b981;">✅ LocalStorage Funcionando</span>';
+            } else {
+                statusEl.innerHTML = '<span style="color: #ef4444;">⚠️ Use Export/Import para backup</span>';
+            }
+        }
+
+        // Carregar dados
+        function carregarDados() {
+            try {
+                if (testarLocalStorage()) {
+                    const dados = localStorage.getItem(STORAGE_KEY);
+                    if (dados && dados !== 'undefined' && dados !== 'null') {
+                        const apostasCarregadas = JSON.parse(dados);
+                        if (Array.isArray(apostasCarregadas) && apostasCarregadas.length > 0) {
+                            apostas = apostasCarregadas;
+                            mostrarMensagem('✅ Dados carregados!', 'success');
+                        } else {
+                            apostas = [...apostasIniciais];
+                        }
+                    } else {
+                        apostas = [...apostasIniciais];
+                    }
+                } else {
+                    apostas = [...apostasIniciais];
+                    mostrarMensagem('⚠️ LocalStorage indisponível. Use Export/Import para backup.', 'error');
+                }
+            } catch (e) {
+                apostas = [...apostasIniciais];
+                mostrarMensagem('⚠️ Erro ao carregar. Usando dados padrão.', 'error');
+            }
+            
+            mostrarApostas();
+            atualizarStatusStorage();
+        }
+
+        // Salvar dados
+        function salvarDados() {
+            try {
+                if (testarLocalStorage()) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(apostas));
+                    mostrarMensagem('💾 Dados salvos com sucesso!', 'success');
+                    atualizarStatusStorage();
+                    return true;
+                } else {
+                    mostrarMensagem('❌ Impossível salvar. Use "Download Backup".', 'error');
+                    return false;
+                }
+            } catch (e) {
+                mostrarMensagem('❌ Erro ao salvar. Use "Download Backup".', 'error');
+                return false;
+            }
+        }
+
+        // Exportar dados
+        function exportarDados() {
+            try {
+                const dados = JSON.stringify(apostas, null, 2);
+                const blob = new Blob([dados], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `backup_apostas_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                mostrarMensagem('📤 Backup baixado com sucesso!', 'success');
+            } catch (e) {
+                mostrarMensagem('❌ Erro ao exportar dados.', 'error');
+            }
+        }
+
+        // Toggle área de importação
+        function toggleImport() {
+            const area = document.getElementById('import-area');
+            area.style.display = area.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Importar dados
+        function importarDados() {
+            try {
+                const texto = document.getElementById('import-json').value.trim();
+                if (!texto) {
+                    mostrarMensagem('❌ Cole o backup na área de texto.', 'error');
+                    return;
+                }
+
+                const dadosImportados = JSON.parse(texto);
+                if (!Array.isArray(dadosImportados)) {
+                    mostrarMensagem('❌ Formato inválido. Deve ser um array.', 'error');
+                    return;
+                }
+
+                apostas = dadosImportados;
+                salvarDados();
+                mostrarApostas();
+                toggleImport();
+                document.getElementById('import-json').value = '';
+                mostrarMensagem('📥 Dados importados com sucesso!', 'success');
+                
+            } catch (e) {
+                mostrarMensagem('❌ Erro ao importar. Verifique o formato JSON.', 'error');
+            }
+        }
+
+        // Resetar dados
+        function resetarDados() {
+            if (confirm('⚠️ Isso apagará TODAS as apostas!\n\nContinuar?')) {
+                apostas = [...apostasIniciais];
+                salvarDados();
+                mostrarApostas();
+                mostrarMensagem('🔄 Dados resetados!', 'success');
+            }
+        }
+
+        // Mostrar mensagem
+        function mostrarMensagem(texto, tipo) {
+            const successEl = document.getElementById('success-msg');
+            const errorEl = document.getElementById('error-msg');
+            
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+            
+            if (tipo === 'success') {
+                successEl.textContent = texto;
+                successEl.style.display = 'block';
+            } else {
+                errorEl.textContent = texto;
+                errorEl.style.display = 'block';
+            }
+            
+            setTimeout(() => {
+                successEl.style.display = 'none';
+                errorEl.style.display = 'none';
+            }, 4000);
+        }
+
+        // Mostrar apostas
+        function mostrarApostas() {
+            const lista = document.getElementById('lista-apostas');
+            
+            let apostasFiltradas = apostas;
+            if (filtroAtivo === 'ativas') {
+                apostasFiltradas = apostas.filter(a => a.status === 'ativa');
+            } else if (filtroAtivo === 'encerradas') {
+                apostasFiltradas = apostas.filter(a => a.status === 'encerrada');
+            }
+            
+            if (apostasFiltradas.length === 0) {
+                lista.innerHTML = '<div class="loading">Nenhuma aposta nesta categoria.</div>';
+                atualizarEstatisticas();
+                return;
+            }
+            
+            lista.innerHTML = '';
+            
+            apostasFiltradas.forEach(aposta => {
+                const card = document.createElement('div');
+                card.className = `card ${aposta.status}`;
+                card.innerHTML = `
+                    <div class="status-badge status-${aposta.status}">
+                        ${aposta.status === 'ativa' ? 'Ativa' : 'Encerrada'}
+                    </div>
+                    <div class="card-title">${aposta.ap1} <span class="vs">vs</span> ${aposta.ap2}</div>
+                    <div class="card-desc">${aposta.desc}</div>
+                    <div class="card-value">💰 ${aposta.val}</div>
+                    ${aposta.obs ? `<div class="card-obs">📝 ${aposta.obs}</div>` : ''}
+                    ${aposta.vencedor ? `<div class="card-obs" style="color: #10b981; font-weight: bold;">🏆 Vencedor: ${aposta.vencedor}</div>` : ''}
+                    <small style="color: #999; display: block; margin-bottom: 15px;">📅 ${aposta.dataCriacao}</small>
+                    <div class="card-buttons">
+                        ${aposta.status === 'ativa' ? `
+                            <button class="card-btn btn-success" onclick="encerrarAposta(${aposta.id}, '${aposta.ap1.replace(/'/g, '\\\')}')">🏆 ${aposta.ap1}</button>
+                            <button class="card-btn btn-success" onclick="encerrarAposta(${aposta.id}, '${aposta.ap2.replace(/'/g, '\\\')}')">🏆 ${aposta.ap2}</button>
+                        ` : ''}
+                        <button class="card-btn btn-danger" onclick="excluirAposta(${aposta.id})">🗑️ Excluir</button>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+            
+            atualizarEstatisticas();
+        }
+
+        // Resto das funções...
+        function mostrarPagina(pagina) {
+            const apostasDiv = document.getElementById('apostas');
+            const regrasDiv = document.getElementById('regras');
+            const botoes = document.querySelectorAll('.nav-btn');
+            
+            botoes.forEach(b => b.classList.remove('active'));
+            
+            if (pagina === 'apostas') {
+                apostasDiv.classList.remove('hidden');
+                regrasDiv.classList.add('hidden');
+                botoes[0].classList.add('active');
+            } else {
+                apostasDiv.classList.add('hidden');
+                regrasDiv.classList.remove('hidden');
+                botoes[1].classList.add('active');
+            }
+        }
+
+        function gerarId() {
+            return Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        function formatarData() {
+            return new Date().toLocaleDateString('pt-BR');
+        }
+
+        function adicionarAposta() {
+            const ap1 = document.getElementById('ap1').value.trim();
+            const ap2 = document.getElementById('ap2').value.trim();
+            const desc = document.getElementById('desc').value.trim();
+            const val = document.getElementById('val').value.trim();
+            const obs = document.getElementById('obs').value.trim();
+            
+            if (!ap1 || !ap2 || !desc || !val) {
+                mostrarMensagem('❌ Preencha todos os campos obrigatórios!', 'error');
+                return;
+            }
+            
+            const novaAposta = {
+                id: gerarId(),
+                ap1, ap2, desc, val, obs,
+                status: 'ativa',
+                dataCriacao: formatarData(),
+                vencedor: null
+            };
+            
+            apostas.unshift(novaAposta);
+            salvarDados();
+            mostrarApostas();
+            
+            // Limpar campos
+            ['ap1', 'ap2', 'desc', 'val', 'obs'].forEach(id =>
